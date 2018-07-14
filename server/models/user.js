@@ -15,21 +15,23 @@ const UserSchema = new Schema({
 // encrypt password
 
 // before saving a model run this
-UserSchema.pre('save', (next) => {
+UserSchema.pre('save', function(next) {
     // get access to user particular user
     const user = this;
 
     // generate a salt and than callback
-    bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.genSalt(10, function(err, salt) {
         if (err) {
             return next(err);
         }
 
         // hash our password using the salt
-        bcrypt.hash(user.password, salt, null, (err, hash) => {
+        bcrypt.hash(user.password, salt, null, function(err, hash) {
             if (err) {
-                next(err);
+             return next(err);
             }
+
+            // overwrite password with encrypted password
             user.password = hash;
             next();
         })
@@ -39,6 +41,3 @@ UserSchema.pre('save', (next) => {
 const UserModel = mongoose.model('userscollection', UserSchema);
 
 module.exports = UserModel;
-
-
-
